@@ -298,8 +298,10 @@ function isCreditCardNumber(/* ccn */) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  const checkNum = String(num).split('').map((elem) => elem * 1);
+  const count = (checkNum.reduce((prev, cur) => prev + cur));
+  return count < 9 ? count : getDigitalRoot(count);
 }
 
 
@@ -349,8 +351,8 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  return num.toString(n);
 }
 
 
@@ -366,8 +368,10 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  const ps = pathes.map((x) => x.split('/'));
+  const ind = ps[0].findIndex((x, i) => !ps.every((v) => v[i] === x));
+  return !ind ? '' : `${ps[0].slice(0, ind).join('/')}/`;
 }
 
 
