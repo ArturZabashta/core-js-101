@@ -115,32 +115,72 @@ function fromJSON(proto, json) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  selector: '',
+  element(value) {
+    const obj = Object.create(cssSelectorBuilder);
+    obj.selector += `${this.selector}${value}`;
+    obj.order = 1;
+    this.error(1);
+    return obj;
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    const obj = Object.create(cssSelectorBuilder);
+    obj.selector += `${this.selector}#${value}`;
+    obj.order = 2;
+    this.error(2);
+    return obj;
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    const obj = Object.create(cssSelectorBuilder);
+    obj.selector += `${this.selector}.${value}`;
+    obj.order = 3;
+    this.error(3);
+    return obj;
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    const obj = Object.create(cssSelectorBuilder);
+    obj.selector += `${this.selector}[${value}]`;
+    obj.order = 4;
+    this.error(4);
+    return obj;
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    const obj = Object.create(cssSelectorBuilder);
+    obj.selector += `${this.selector}:${value}`;
+    obj.order = 5;
+    this.error(5);
+    return obj;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    const obj = Object.create(cssSelectorBuilder);
+    obj.selector += `${this.selector}::${value}`;
+    obj.order = 6;
+    this.error(6);
+    return obj;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
+    const obj = Object.create(cssSelectorBuilder);
+    obj.selector += `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
+    return obj;
+  },
+
+  stringify() {
+    return this.selector;
+  },
+
+  error(order) {
+    if (order === this.order && [1, 2, 6].indexOf(order) !== -1) {
+      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
+    if (order < this.order) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
   },
 };
 
