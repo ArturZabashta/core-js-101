@@ -91,14 +91,16 @@ function getPolynom(a, b, c) {
  *   memoizer() => the same random number  (next run, returns the previous cached result)
  */
 function memoize(func) {
-  const cache = {};
-  return (...args) => {
-    const n = args[0];
-    if (n in cache) {
-      return cache[n];
+  const memory = [];
+  return (anything) => {
+    // область видимости вложенной функции
+    if (anything in memory) {
+      // вложенная функция читает переменную memory
+      return memory[anything];
     }
-    const result = func(n);
-    cache[n] = result;
+    const result = func(anything);
+    // вложенная функция изменяет переменную memory
+    memory[anything] = result;
     return result;
   };
 }
@@ -119,8 +121,14 @@ function memoize(func) {
  * }, 2);
  * retryer() => 2
  */
-function retry(/* func, attempts */) {
-  throw new Error('Not implemented');
+function retry(func, attempts) {
+  return () => {
+    try {
+      return func();
+    } catch (err) {
+      return retry(func, attempts - 1)();
+    }
+  };
 }
 
 
@@ -165,8 +173,8 @@ function logger(/* func, logFunc */) {
  *   partialUsingArguments(fn, 'a','b','c')('d') => 'abcd'
  *   partialUsingArguments(fn, 'a','b','c','d')() => 'abcd'
  */
-function partialUsingArguments(/* fn, ...args1 */) {
-  throw new Error('Not implemented');
+function partialUsingArguments(fn, ...args1) {
+  return (...args2) => fn(...args1, ...args2);
 }
 
 
